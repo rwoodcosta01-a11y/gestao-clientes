@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Person
 from .forms import PersonForm
-
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
 
 @login_required
 def persons_list(request):
@@ -41,3 +44,18 @@ def persons_delete(request, id):
         return redirect('person_list')
 
     return render(request, 'person_delete_confirm.html', {'person': person})
+
+
+class PersonList(ListView):
+    model = Person
+        
+
+class PersonDetail(DetailView):
+    model = Person
+
+
+class PersonCreate(CreateView):
+    model = Person
+    fields = ['first_name', 'last_name', 'age', 'salary', 'bio']
+    template_name = 'person_form.html'
+    success_url = reverse_lazy('person_list')
